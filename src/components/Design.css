@@ -1,0 +1,36 @@
+.design-asset { position: absolute; display: block; max-width: none; pointer-events: none; user-select: none; }
+
+.angular-button { position: absolute; display: block; padding: 0; border: 0; margin: 0; background: transparent; color: white; cursor: pointer; font-family: 'Noto Kufi Arabic', sans-serif; touch-action: manipulation; -webkit-tap-highlight-color: transparent; }
+.angular-button:disabled { cursor: default; opacity: .45; }
+.angular-button[data-answer="true"]:disabled { opacity: 1; }
+.angular-button:focus-visible { outline: 5px solid #d9ffff; outline-offset: 12px; border-radius: 16px; }
+.angular-button__art { position: absolute; left: 0; top: 0; display: block; transform-origin: 0 0; pointer-events: none; }
+.angular-button__layer { position: absolute; display: block; transform: scaleX(-1); }
+.angular-button__label { position: absolute; left: 50%; top: 50%; width: 74%; transform: translate(-50%, -50%); font-weight: 500; line-height: 1.897; text-align: center; white-space: nowrap; pointer-events: none; }
+
+.glow-panel { position: absolute; pointer-events: none; }
+.glow-panel > span { position: absolute; display: block; box-sizing: border-box; }
+.glow-panel__asset-body { left: 0; top: 0; transform-origin: 0 0; }
+.glow-panel__gradient, .glow-panel__quiet, .glow-panel__edge, .glow-panel__bloom, .glow-panel__diffuse, .glow-panel__outer-crisp { inset: 0; border-radius: var(--panel-radius); }
+.glow-panel__gradient { opacity: .8; background: linear-gradient(90deg, #002265 0%, #00103d 15%, #00103d 56%, #002a85 84%, #0648e8 100%); }
+.glow-panel__quiet { opacity: .8; background: radial-gradient(ellipse 60% 55% at 42% 50%, rgba(0,16,61,.75294) 0%, rgba(0,16,61,.50196) 60%, rgba(0,16,61,0) 100%); }
+.glow-panel__edge { opacity: .8; background: linear-gradient(0deg, rgba(0,107,255,.502) 0%, rgba(0,55,188,.188) 6.5%, transparent 25%, transparent 77%, rgba(21,74,255,.376) 100%); }
+.glow-panel--message .glow-panel__gradient { background: linear-gradient(180deg, #002265 0%, #00103d 15%, #00103d 56%, #002a85 84%, #0648e8 100%); }
+.glow-panel--message .glow-panel__quiet { background: radial-gradient(ellipse 55% 60% at 50% 42%, rgba(0,16,61,.75294) 0%, rgba(0,16,61,.50196) 60%, rgba(0,16,61,0) 100%); }
+.glow-panel--message .glow-panel__edge { background: linear-gradient(90deg, rgba(0,107,255,.502) 0%, rgba(0,55,188,.188) 6.5%, transparent 25%, transparent 77%, rgba(21,74,255,.376) 100%); }
+.glow-panel__bloom { border: var(--panel-bloom) solid var(--panel-light); filter: blur(var(--panel-bloom)); }
+.glow-panel__diffuse { border: var(--panel-diffuse-border) solid var(--panel-light); filter: blur(var(--panel-diffuse)); opacity: .85; }
+.glow-panel__inner-diffuse, .glow-panel__inner-crisp { left: var(--panel-inset-x); right: var(--panel-inset-x); top: var(--panel-inset-y); bottom: var(--panel-inset-y); border-radius: var(--panel-inner-radius); }
+.glow-panel__inner-diffuse { border: var(--panel-inner-diffuse-border) solid var(--panel-light); filter: blur(var(--panel-inner-blur)); }
+.glow-panel__inner-crisp { border: var(--panel-inner-border) solid var(--panel-light); }
+.glow-panel__outer-crisp { border: var(--panel-outer-border) solid var(--panel-outer-light); }
+.field-artwork { position: absolute; display: block; pointer-events: none; transform-origin: 0 0; }
+
+.glow-panel__bloom,.glow-panel__diffuse,.glow-panel__inner-diffuse{border:0}
+.glow-panel__bloom{opacity:.65}
+.glow-panel__diffuse{opacity:.5525}
+.glow-panel__inner-diffuse{opacity:.65}
+.glow-panel__bloom::before,.glow-panel__diffuse::before,.glow-panel__inner-diffuse::before{content:"";position:absolute;inset:0;border-radius:inherit;background:var(--halo-gradient);mask:linear-gradient(#fff 0 0) content-box,linear-gradient(#fff 0 0);mask-composite:exclude;-webkit-mask:linear-gradient(#fff 0 0) content-box,linear-gradient(#fff 0 0);-webkit-mask-composite:xor}
+.glow-panel__bloom::before{padding:var(--panel-bloom)}
+.glow-panel__diffuse::before{padding:var(--panel-diffuse-border)}
+.glow-panel__inner-diffuse::before{padding:var(--panel-inner-diffuse-border)}

@@ -1,0 +1,97 @@
+.scene-transition,
+.scene-transition__incoming,
+.scene-transition__outgoing {
+  position: absolute;
+  inset: 0;
+}
+
+.scene-transition__incoming {
+  transform-origin: 50% 50%;
+}
+
+.scene-transition__incoming[inert] {
+  pointer-events: none;
+}
+
+.scene-transition__outgoing {
+  pointer-events: none;
+  user-select: none;
+  animation: scene-depart var(--scene-exit-ms) cubic-bezier(.4, 0, 1, 1) both;
+}
+
+.scene-transition__scan {
+  position: absolute;
+  inset: 0;
+  overflow: hidden;
+  pointer-events: none;
+  user-select: none;
+}
+
+.scene-transition__scan::after {
+  content: '';
+  position: absolute;
+  top: -60px;
+  left: 8%;
+  width: 84%;
+  height: 2px;
+  background: linear-gradient(90deg, transparent, #74edff 30%, #c1ffff 50%, #74edff 70%, transparent);
+  box-shadow: 0 0 26px 8px rgba(84, 227, 255, .16);
+  animation: scene-hologram var(--scene-enter-ms) ease-out both;
+}
+
+.scene-transition[data-entering='true'] .scene-transition__incoming .glow-panel__bloom,
+.scene-transition[data-entering='true'] .scene-transition__incoming .glow-panel__inner-diffuse {
+  animation: scene-board-reveal var(--scene-enter-ms) ease-out;
+}
+
+@keyframes scene-depart {
+  from { opacity: 1; transform: translateY(0); }
+  to { opacity: 0; transform: translateY(-20px); }
+}
+
+@keyframes scene-hologram {
+  0% { opacity: 0; transform: translateY(0); }
+  20% { opacity: .09; }
+  75% { opacity: .07; }
+  100% { opacity: 0; transform: translateY(3900px); }
+}
+
+@keyframes scene-board-reveal {
+  from { opacity: .22; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .scene-transition__outgoing,
+  .scene-transition__scan {
+    display: none;
+  }
+  .scene-transition .scene-transition__incoming .glow-panel__bloom,
+  .scene-transition .scene-transition__incoming .glow-panel__inner-diffuse {
+    animation: none;
+  }
+}
+
+/* Gentle neon breathing continues between page changes without moving the board. */
+.scene-transition[data-entering='false'] .scene-transition__incoming .glow-panel__diffuse {
+  animation: scene-neon-breathe 5.4s ease-in-out infinite;
+  will-change: opacity;
+}
+.scene-transition[data-entering='false'] .scene-transition__incoming .glow-panel--message .glow-panel__diffuse {
+  animation-delay: -2.7s;
+}
+.angular-button { transition: transform 120ms ease-out, filter 160ms ease-out; transform-origin: center; }
+.angular-button:active:not(:disabled) { transform: scale(.975); filter: brightness(1.18); }
+@keyframes scene-neon-breathe { 0%,100% { opacity: .44; } 50% { opacity: .66; } }
+@media(prefers-reduced-motion:reduce) {
+  .scene-transition[data-entering='false'] .scene-transition__incoming .glow-panel__diffuse { animation:none; will-change:auto; }
+  .angular-button { transition:none; }
+  .angular-button:active:not(:disabled) { transform:none; }
+}
+/* Keep labels and questions readable over the moving title in the supplied film. */
+.scene-transition .glow-panel:not(.glow-panel--message)::before {
+  content: '';
+  position: absolute;
+  inset: 10px;
+  border-radius: calc(var(--panel-radius) - 10px);
+  background: rgba(0, 12, 43, .72);
+}

@@ -1,0 +1,23 @@
+appId: com.idagcc.catchthephish
+productName: Catch the Phish
+asar: true
+asarUnpack:
+  - dist/video/**/*
+  - dist/audio/**/*
+directories:
+  output: release
+files:
+  - dist/**/*
+  - electron/main.cjs
+  - electron/asset-protocol.cjs
+  - package.json
+afterPack: electron/after-pack.cjs
+win:
+  target:
+    - target: zip
+      arch:
+        - x64
+  artifactName: Catch-the-Phish-${version}-Windows-${arch}.${ext}
+  signAndEditExecutable: false
+portable:
+  requestExecutionLevel: user
