@@ -14,7 +14,9 @@ The game opens full screen on the largest connected portrait display. If no port
 
 Touch the answer buttons once. Each question accepts one answer. Quiz images, fonts, background video, music, and sound effects are included locally.
 
-Tap **Rotate screen** at the top right of the home screen to rotate the game in 90° steps. The choice is remembered, and the button stays upright in every orientation.
+The mouse pointer stays hidden throughout the game, including registration fields and the on-screen keyboard. Touch and mouse clicks still work normally.
+
+Press **Shift+R** to rotate the game in 90° steps when you are not typing in a registration field, or **Ctrl+Shift+R** at any time. The choice is remembered. A confirmation appears for two seconds after rotation, then disappears; there is no persistent rotation button.
 
 If Windows sends touches to another monitor, use Control Panel → Tablet PC Settings → Setup to associate touch input with the portrait display. Windows must already recognize the touchscreen driver.
 

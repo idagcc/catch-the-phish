@@ -11,6 +11,7 @@ import type {Answer, Question, RoundState, LeaderboardEntry} from './lib/game';
 const ROUND_COUNT = 10;
 const INACTIVITY_TIMEOUT_MS = 30_000;
 const ROTATION_STORAGE_KEY = 'catch-the-phish.rotation.v1';
+const ROTATION_NOTICE_MS = 2_000;
 const pool = questionsData as Question[];
 const asset = (path:string) => import.meta.env.BASE_URL + path.replace(/^\//,'');
 const clock = () => performance.now();
@@ -54,7 +55,15 @@ export default function App(){
   const [viewport,setViewport]=useState(()=>({width:window.innerWidth,height:window.innerHeight}));
   const sideways=rotation===90||rotation===270;
   const scale=Math.min(viewport.width/(sideways?3840:2160),viewport.height/(sideways?2160:3840));
-  const rotateScreen=useCallback(()=>setRotation(current=>(current+90)%360),[]);
+  const [showRotationNotice,setShowRotationNotice]=useState(false);
+  const rotationNoticeTimer=useRef<ReturnType<typeof setTimeout>|null>(null);
+  const rotateScreen=useCallback(()=>{
+    setRotation(current=>(current+90)%360);
+    setShowRotationNotice(true);
+    if(rotationNoticeTimer.current)clearTimeout(rotationNoticeTimer.current);
+    rotationNoticeTimer.current=setTimeout(()=>{setShowRotationNotice(false);rotationNoticeTimer.current=null},ROTATION_NOTICE_MS);
+  },[]);
+  useEffect(()=>()=>{if(rotationNoticeTimer.current)clearTimeout(rotationNoticeTimer.current)},[]);
   const transition=useRef<ReturnType<typeof setTimeout>|null>(null);
   const pendingStart=useRef(0);const saved=useRef(false);
   const pendingScores=useRef<LeaderboardEntry[]>([]);
@@ -235,6 +244,6 @@ export default function App(){
       </SceneTransition>
       {keyboard&&screen==='registration'&&<TouchKeyboard field={keyboard} onKey={modify} onClose={()=>{setKeyboard(null);(document.activeElement as HTMLElement)?.blur()}}/>}
     </div>
-    {screen==='idle'&&<button className="rotate-screen-button" onClick={rotateScreen} title="Rotate clockwise by 90° (Shift + R)">↻ Rotate screen <span>{rotation}°</span></button>}
+    {showRotationNotice&&<div className="rotation-notice" role="status">Screen rotated to {rotation}°</div>}
   </main>;
 }
