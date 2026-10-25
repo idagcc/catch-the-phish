@@ -9,6 +9,7 @@ import {selectQuestions, startRound, answerQuestion, nextQuestion, getRoundResul
 import type {Answer, Question, RoundState, LeaderboardEntry} from './lib/game';
 
 const ROUND_COUNT = 10;
+const INACTIVITY_TIMEOUT_MS = 30_000;
 const pool = questionsData as Question[];
 const asset = (path:string) => import.meta.env.BASE_URL + path.replace(/^\//,'');
 const clock = () => performance.now();
@@ -44,7 +45,7 @@ export default function App(){
   const [now,setNow]=useState(clock());
   const [loading,setLoading]=useState(false);const [error,setError]=useState('');
   const [scale,setScale]=useState(()=>Math.min(window.innerWidth/2160,window.innerHeight/3840));
-  const lastInteraction=useRef(Date.now());const transition=useRef<ReturnType<typeof setTimeout>|null>(null);
+  const transition=useRef<ReturnType<typeof setTimeout>|null>(null);
   const pendingStart=useRef(0);const saved=useRef(false);
   const pendingScores=useRef<LeaderboardEntry[]>([]);
   const flushScores=useCallback(()=>{
@@ -55,8 +56,19 @@ export default function App(){
   },[]);
   const reset=useCallback(()=>{pendingStart.current++;if(transition.current)clearTimeout(transition.current);roundRef.current=null;readyScene.current=null;questionReadyRef.current=false;setQuestionReady(false);setRound(null);setName('');setEmail('');setKeyboard(null);setLoading(false);setError('');setScreen('idle');flushScores();},[flushScores]);
   useEffect(()=>{const resize=()=>setScale(Math.min(window.innerWidth/2160,window.innerHeight/3840));window.addEventListener('resize',resize);return()=>window.removeEventListener('resize',resize)},[]);
-  useEffect(()=>{const touch=()=>{lastInteraction.current=Date.now()};window.addEventListener('pointerdown',touch);window.addEventListener('keydown',touch);const timer=setInterval(()=>{if(screen!=='idle'&&Date.now()-lastInteraction.current>(screen==='quiz'?180000:90000))reset()},1000);return()=>{clearInterval(timer);window.removeEventListener('pointerdown',touch);window.removeEventListener('keydown',touch)}},[screen,reset]);
-  useEffect(()=>{lastInteraction.current=Date.now();if(screen==='result'){const t=setTimeout(reset,20000);return()=>clearTimeout(t)}},[screen,reset]);
+  useEffect(()=>{
+    if(screen==='idle')return;
+    let timer:ReturnType<typeof setTimeout>;
+    const restartTimer=()=>{clearTimeout(timer);timer=setTimeout(reset,INACTIVITY_TIMEOUT_MS)};
+    restartTimer();
+    window.addEventListener('pointerdown',restartTimer,true);
+    window.addEventListener('keydown',restartTimer,true);
+    return()=>{
+      clearTimeout(timer);
+      window.removeEventListener('pointerdown',restartTimer,true);
+      window.removeEventListener('keydown',restartTimer,true);
+    };
+  },[screen,reset]);
   useEffect(()=>{if(screen!=='quiz')return;const i=setInterval(()=>setNow(clock()),100);return()=>clearInterval(i)},[screen]);
   useEffect(()=>()=>{pendingStart.current++;if(transition.current)clearTimeout(transition.current)},[]);
   const sceneKey=screen==='quiz'&&round?`quiz-${roundGeneration.current}-${round.index}`:screen;
@@ -164,8 +176,8 @@ export default function App(){
           ['INSPECT THE MESSAGE','Read the sender, message and links.','Look for anything suspicious.'],
           ['TAP YOUR CHOICE','Select Legitimate or Phishing.'],
           ['WATCH THE FEEDBACK','Green means correct.','Red means incorrect.'],
-          ['BE ACCURATE AND QUICK','Highest correct count wins.','Lowest total time breaks a tie.']
-        ].map((step,i)=><div key={i}><Text x={350} y={1244+i*380} w={120} size={76} bold align="left" color="#5be9ff">0{i+1}</Text><Text x={540} y={1264+i*380} w={1200} size={56} bold align="left">{step[0]}</Text><Text x={540} y={1402+i*380} w={1200} align="left">{step[1]}</Text>{step[2]&&<Text x={540} y={1492+i*380} w={1200} align="left">{step[2]}</Text>}</div>)}
+          ['BE ACCURATE AND QUICK']
+        ].map((step,i)=><div key={i}><Text x={350} y={1244+i*380} w={120} size={76} bold align="left" color="#5be9ff">0{i+1}</Text><Text x={540} y={1264+i*380} w={1200} size={56} bold align="left">{step[0]}</Text>{step[1]&&<Text x={540} y={1402+i*380} w={1200} align="left">{step[1]}</Text>}{step[2]&&<Text x={540} y={1492+i*380} w={1200} align="left">{step[2]}</Text>}</div>)}
         <AngularButton x={640} y={3000} disabled={loading} onClick={begin}>{loading?'Loading…':'Next'}</AngularButton>
         {error&&<Text y={3300} size={40} color="#ffb8b8">{error}</Text>}
       </>}

@@ -25,7 +25,7 @@ Press **Ctrl+Shift+Q** to close the game with a confirmation. **F11** switches b
 - Correct/incorrect border feedback lasts 1.5 seconds, then the next question appears.
 - Rankings use correct answers first, then the sum of answer times in milliseconds. Feedback, loading, and entrance-animation time are excluded.
 - The top 1,000 scores remain on the same Windows computer between launches. Email addresses are stored locally and are never displayed on the leaderboard.
-- Results return to the start screen after 20 seconds. Abandoned registration resets after 90 seconds; abandoned quizzes reset after three minutes without input.
+- Registration, instructions, quizzes, and results return to the home screen after 30 seconds without a tap or keypress. Each interaction restarts the timer; abandoned sessions clear the player's details and unfinished round.
 
 The question image uses the message crop shown in the approved Figma card. Original uncropped source files remain in `public/quiz/`, with the answer key and provenance in `data/questions.json`.
 
