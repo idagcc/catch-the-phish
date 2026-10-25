@@ -12,6 +12,7 @@ files:
   - electron/asset-protocol.cjs
   - package.json
 afterPack: electron/after-pack.cjs
+afterSign: electron/after-sign.cjs
 win:
   target:
     - target: zip
@@ -28,4 +29,6 @@ mac:
         - arm64
   artifactName: Catch-the-Phish-${version}-Mac-${arch}.${ext}
   category: public.app-category.education
-  identity: null
+  identity: "-"
+  entitlements: build/entitlements.mac.plist
+  entitlementsInherit: build/entitlements.mac.plist

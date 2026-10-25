@@ -16,7 +16,7 @@ Press **Ctrl+Shift+Q** to close the game with a confirmation. **F11** switches b
 
 ## Run on Mac and rotate the game
 
-On an Apple Silicon Mac (M1 or newer), download and extract the Mac ZIP from the latest release, then open **Catch the Phish.app**. The app is unsigned and not notarized. If macOS blocks it, use **System Settings → Privacy & Security → Open Anyway** for this download. From the source project, run `npm ci`, `npm run build`, then `npm start`. The game opens full screen on Mac too. Use **Command+Shift+Q** to close it with a confirmation, or **Command+Shift+M** to toggle sound.
+On an Apple Silicon Mac (M1 or newer), download and extract the Mac ZIP from the latest release, move **Catch the Phish.app** to Applications, then open it. The app has an ad-hoc signature verified during packaging, but is not signed with an Apple Developer ID or notarized. If macOS blocks it, use **System Settings → Privacy & Security → Open Anyway** for this download. If it still reports this app as damaged, see [Mac setup](docs/mac-setup.md). From the source project, run `npm ci`, `npm run build`, then `npm start`. The game opens full screen on Mac too. Use **Command+Shift+Q** to close it with a confirmation, or **Command+Shift+M** to toggle sound.
 
 Leave macOS display orientation set to **Landscape** when its portrait setting causes touchscreen problems. Press **Command+Shift+R** on Mac or **Ctrl+Shift+R** on Windows to rotate the entire game clockwise by 90°. Repeat to cycle through 90°, 180°, 270°, and upright. Choose 90° or 270° to suit the way the physical touchscreen is mounted. The game scales to fit the rotated dimensions, including its keyboard, and touch/click targets rotate with the controls. The chosen orientation is remembered on this computer after returning home or reopening the app.
 
@@ -67,3 +67,5 @@ Version 1.1 adds the supplied video, motion and audio. See `docs/audio-notes.md`
 Version1.1.1 removes the sound banner and adds clearer glass chimes to button, field, and answer activations, with softer chimes for keyboard keys. Ctrl+Shift+M remains the operator mute shortcut.
 
 Version 1.1.2 adds saved app rotation in 90° steps, an Apple Silicon Mac download, a 30-second inactivity timeout, and the simplified fourth instruction: “Be accurate and quick.”
+
+Version 1.1.3 repairs Mac app signing and checks the app and nested signatures before creating a download archive. Apple Developer ID signing and notarization are still required for distribution without manual macOS approval.

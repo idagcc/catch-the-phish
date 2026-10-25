@@ -1,5 +1,7 @@
 # Catch the Phish 1.1.2
 
+**Mac users: use [version 1.1.3 or newer](https://github.com/idagcc/catch-the-phish/releases/latest).** The 1.1.2 Mac package has an invalid signature and can trigger a “damaged” alert. Version 1.1.3 repairs the signature; manual macOS approval may still be required.
+
 Rotate the portrait game inside a landscape desktop, including the touchscreen keyboard and touch targets. Press **Command+Shift+R** on Mac or **Ctrl+Shift+R** on Windows to cycle through 0°, 90°, 180°, and 270°. The app remembers the orientation after returning home or reopening.
 
 Keep the operating system in Landscape and use 90° or 270° when the physical touchscreen is mounted in portrait. The game rotates independently of the desktop.
