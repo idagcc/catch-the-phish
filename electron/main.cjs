@@ -45,7 +45,7 @@ async function requestExit() {
     const { response } = await dialog.showMessageBox(mainWindow, {
       type: 'question',
       title: 'Close Catch the Phish?',
-      message: 'Close the game and return to Windows?',
+      message: 'Close the game and return to the desktop?',
       detail: 'Saved leaderboard scores will be kept on this computer.',
       buttons: ['Keep playing', 'Close game'],
       defaultId: 0,

@@ -1,10 +1,10 @@
 # Catch the Phish
 
-Offline quiz for a 65-inch Windows touchscreen in portrait orientation, based on the approved Figma flow.
+Offline portrait touchscreen quiz for Windows and Mac, based on the approved Figma flow.
 
 ## Downloads
 
-The [latest release](https://github.com/idagcc/catch-the-phish/releases/latest) includes the ready-to-run Windows x64 ZIP, the production web build ZIP, and SHA-256 checksums. The web build must be served from a static web server after extraction.
+The [latest release](https://github.com/idagcc/catch-the-phish/releases/latest) includes ready-to-run Windows x64 and Apple Silicon Mac ZIPs, the production web build ZIP, and SHA-256 checksums. The web build must be served from a static web server after extraction.
 
 ## Run on Windows
 
@@ -13,6 +13,14 @@ Download the Windows ZIP from the latest release, or use the locally built ZIP i
 Set Windows display orientation to **Portrait**, ideally **2160 × 3840** (1080 × 1920 is also supported). The app chooses a portrait display automatically and fills it while preserving the approved 9:16 layout.
 
 Press **Ctrl+Shift+Q** to close the game with a confirmation. **F11** switches between fullscreen and an operator window. **Ctrl+Shift+M** toggles sound.
+
+## Run on Mac and rotate the game
+
+On an Apple Silicon Mac (M1 or newer), download and extract the Mac ZIP from the latest release, then open **Catch the Phish.app**. The app is unsigned and not notarized. If macOS blocks it, use **System Settings → Privacy & Security → Open Anyway** for this download. From the source project, run `npm ci`, `npm run build`, then `npm start`. The game opens full screen on Mac too. Use **Command+Shift+Q** to close it with a confirmation, or **Command+Shift+M** to toggle sound.
+
+Leave macOS display orientation set to **Landscape** when its portrait setting causes touchscreen problems. Press **Command+Shift+R** on Mac or **Ctrl+Shift+R** on Windows to rotate the entire game clockwise by 90°. Repeat to cycle through 90°, 180°, 270°, and upright. Choose 90° or 270° to suit the way the physical touchscreen is mounted. The game scales to fit the rotated dimensions, including its keyboard, and touch/click targets rotate with the controls. The chosen orientation is remembered on this computer after returning home or reopening the app.
+
+On a display that is physically landscape, upright mode keeps the portrait game centered with space at the sides. Rotating the game makes its image sideways so a physically portrait-mounted display can still use the operating system's landscape setting. This setting rotates only the game; macOS and other apps keep their existing orientation.
 
 ## Game
 
@@ -45,6 +53,7 @@ npm test
 npm run build
 npm start -- --windowed
 npm run package:win
+npm run package:mac
 ```
 
 See `docs/windows-setup.md` for operation and backup instructions. The native Windows app uses a stable `ctphish://app` origin and a fixed user data directory so moving or extracting the app into another folder does not change its saved leaderboard.
@@ -56,3 +65,5 @@ The production build, 11 automated game/leaderboard tests, and seven local-media
 Version 1.1 adds the supplied video, motion and audio. See `docs/audio-notes.md` for the original score and `docs/media-validation.md` for playback checks.
 
 Version1.1.1 removes the sound banner and adds clearer glass chimes to button, field, and answer activations, with softer chimes for keyboard keys. Ctrl+Shift+M remains the operator mute shortcut.
+
+Version 1.1.2 adds saved app rotation in 90° steps, an Apple Silicon Mac download, a 30-second inactivity timeout, and the simplified fourth instruction: “Be accurate and quick.”

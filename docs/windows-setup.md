@@ -20,6 +20,7 @@ If Windows sends touches to another monitor, use Control Panel → Tablet PC Set
 
 - `Ctrl + Shift + Q`: show the close-game confirmation.
 - `Ctrl + Shift + M`: mute or unmute music and sound effects.
+- `Ctrl + Shift + R`: rotate the game clockwise by 90°. The chosen orientation is remembered. If operating-system rotation causes touch problems, keep Windows in Landscape and rotate the game to match the physically mounted touchscreen instead.
 - `F11`: switch between the full-screen game and a testing window.
 - To test the app in a window from a command prompt: `"Catch the Phish.exe" --windowed`.
 

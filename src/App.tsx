@@ -10,6 +10,7 @@ import type {Answer, Question, RoundState, LeaderboardEntry} from './lib/game';
 
 const ROUND_COUNT = 10;
 const INACTIVITY_TIMEOUT_MS = 30_000;
+const ROTATION_STORAGE_KEY = 'catch-the-phish.rotation.v1';
 const pool = questionsData as Question[];
 const asset = (path:string) => import.meta.env.BASE_URL + path.replace(/^\//,'');
 const clock = () => performance.now();
@@ -44,7 +45,15 @@ export default function App(){
   const [leaderboard,setLeaderboard]=useState<LeaderboardEntry[]>(()=>readLeaderboard(storage));
   const [now,setNow]=useState(clock());
   const [loading,setLoading]=useState(false);const [error,setError]=useState('');
-  const [scale,setScale]=useState(()=>Math.min(window.innerWidth/2160,window.innerHeight/3840));
+  const [rotation,setRotation]=useState(()=>{
+    try {
+      const saved=Number(localStorage.getItem(ROTATION_STORAGE_KEY));
+      return [90,180,270].includes(saved)?saved:0;
+    }catch{return 0}
+  });
+  const [viewport,setViewport]=useState(()=>({width:window.innerWidth,height:window.innerHeight}));
+  const sideways=rotation===90||rotation===270;
+  const scale=Math.min(viewport.width/(sideways?3840:2160),viewport.height/(sideways?2160:3840));
   const transition=useRef<ReturnType<typeof setTimeout>|null>(null);
   const pendingStart=useRef(0);const saved=useRef(false);
   const pendingScores=useRef<LeaderboardEntry[]>([]);
@@ -55,7 +64,19 @@ export default function App(){
     setLeaderboard(merged);return pendingScores.current.length===0;
   },[]);
   const reset=useCallback(()=>{pendingStart.current++;if(transition.current)clearTimeout(transition.current);roundRef.current=null;readyScene.current=null;questionReadyRef.current=false;setQuestionReady(false);setRound(null);setName('');setEmail('');setKeyboard(null);setLoading(false);setError('');setScreen('idle');flushScores();},[flushScores]);
-  useEffect(()=>{const resize=()=>setScale(Math.min(window.innerWidth/2160,window.innerHeight/3840));window.addEventListener('resize',resize);return()=>window.removeEventListener('resize',resize)},[]);
+  useEffect(()=>{const resize=()=>setViewport({width:window.innerWidth,height:window.innerHeight});window.addEventListener('resize',resize);return()=>window.removeEventListener('resize',resize)},[]);
+  useEffect(()=>{
+    try{localStorage.setItem(ROTATION_STORAGE_KEY,String(rotation))}catch{/* Rotation still works when storage is unavailable. */}
+  },[rotation]);
+  useEffect(()=>{
+    const rotate=(event:KeyboardEvent)=>{
+      if(!(event.ctrlKey||event.metaKey)||!event.shiftKey||event.key.toLowerCase()!=='r')return;
+      event.preventDefault();
+      if(!event.repeat)setRotation(current=>(current+90)%360);
+    };
+    window.addEventListener('keydown',rotate,true);
+    return()=>window.removeEventListener('keydown',rotate,true);
+  },[]);
   useEffect(()=>{
     if(screen==='idle')return;
     let timer:ReturnType<typeof setTimeout>;
@@ -138,7 +159,7 @@ export default function App(){
   const elapsed=result?result.elapsedMs+(screen==='quiz'&&questionReady&&!lastAnswer&&round?Math.max(0,now-round.questionStartedAt):0):0;
   const feedback:'correct'|'incorrect'|undefined=lastAnswer?(lastAnswer.correct?'correct':'incorrect'):undefined;
   return <main className="app-viewport">
-    <div className="design-plane" style={{width:2160,height:3840,transform:`translate(-50%,-50%) scale(${scale})`}} data-screen={screen}>
+    <div className="design-plane" style={{width:2160,height:3840,transform:`translate(-50%,-50%) rotate(${rotation}deg) scale(${scale})`}} data-screen={screen} data-rotation={rotation}>
       <BackgroundVideo/>
       <SceneTransition sceneKey={sceneKey} onReady={handleSceneReady}>
       {screen==='idle'&&<>

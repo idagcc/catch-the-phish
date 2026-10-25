@@ -21,3 +21,11 @@ win:
   signAndEditExecutable: false
 portable:
   requestExecutionLevel: user
+mac:
+  target:
+    - target: zip
+      arch:
+        - arm64
+  artifactName: Catch-the-Phish-${version}-Mac-${arch}.${ext}
+  category: public.app-category.education
+  identity: null
