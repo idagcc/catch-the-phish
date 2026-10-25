@@ -54,6 +54,7 @@ export default function App(){
   const [viewport,setViewport]=useState(()=>({width:window.innerWidth,height:window.innerHeight}));
   const sideways=rotation===90||rotation===270;
   const scale=Math.min(viewport.width/(sideways?3840:2160),viewport.height/(sideways?2160:3840));
+  const rotateScreen=useCallback(()=>setRotation(current=>(current+90)%360),[]);
   const transition=useRef<ReturnType<typeof setTimeout>|null>(null);
   const pendingStart=useRef(0);const saved=useRef(false);
   const pendingScores=useRef<LeaderboardEntry[]>([]);
@@ -70,13 +71,19 @@ export default function App(){
   },[rotation]);
   useEffect(()=>{
     const rotate=(event:KeyboardEvent)=>{
-      if(!(event.ctrlKey||event.metaKey)||!event.shiftKey||event.key.toLowerCase()!=='r')return;
+      if(!event.shiftKey||event.altKey||(event.code!=='KeyR'&&event.key.toLowerCase()!=='r'))return;
+      // Typing an uppercase R in registration must keep entering the player's details.
+      if(!event.ctrlKey&&!event.metaKey&&event.target instanceof HTMLElement&&(event.target.isContentEditable||event.target.closest('input,textarea,select')))return;
       event.preventDefault();
-      if(!event.repeat)setRotation(current=>(current+90)%360);
+      if(!event.repeat)rotateScreen();
     };
     window.addEventListener('keydown',rotate,true);
-    return()=>window.removeEventListener('keydown',rotate,true);
-  },[]);
+    window.addEventListener('ctphish:rotate',rotateScreen);
+    return()=>{
+      window.removeEventListener('keydown',rotate,true);
+      window.removeEventListener('ctphish:rotate',rotateScreen);
+    };
+  },[rotateScreen]);
   useEffect(()=>{
     if(screen==='idle')return;
     let timer:ReturnType<typeof setTimeout>;
@@ -84,10 +91,12 @@ export default function App(){
     restartTimer();
     window.addEventListener('pointerdown',restartTimer,true);
     window.addEventListener('keydown',restartTimer,true);
+    window.addEventListener('ctphish:rotate',restartTimer);
     return()=>{
       clearTimeout(timer);
       window.removeEventListener('pointerdown',restartTimer,true);
       window.removeEventListener('keydown',restartTimer,true);
+      window.removeEventListener('ctphish:rotate',restartTimer);
     };
   },[screen,reset]);
   useEffect(()=>{if(screen!=='quiz')return;const i=setInterval(()=>setNow(clock()),100);return()=>clearInterval(i)},[screen]);
@@ -226,5 +235,6 @@ export default function App(){
       </SceneTransition>
       {keyboard&&screen==='registration'&&<TouchKeyboard field={keyboard} onKey={modify} onClose={()=>{setKeyboard(null);(document.activeElement as HTMLElement)?.blur()}}/>}
     </div>
+    {screen==='idle'&&<button className="rotate-screen-button" onClick={rotateScreen} title="Rotate clockwise by 90° (Shift + R)">↻ Rotate screen <span>{rotation}°</span></button>}
   </main>;
 }

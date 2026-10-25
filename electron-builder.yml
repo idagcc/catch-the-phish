@@ -9,6 +9,8 @@ directories:
 files:
   - dist/**/*
   - electron/main.cjs
+  - electron/preload.cjs
+  - electron/display-policy.cjs
   - electron/asset-protocol.cjs
   - package.json
 afterPack: electron/after-pack.cjs

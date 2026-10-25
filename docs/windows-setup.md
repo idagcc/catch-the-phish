@@ -14,13 +14,15 @@ The game opens full screen on the largest connected portrait display. If no port
 
 Touch the answer buttons once. Each question accepts one answer. Quiz images, fonts, background video, music, and sound effects are included locally.
 
+Tap **Rotate screen** at the top right of the home screen to rotate the game in 90° steps. The choice is remembered, and the button stays upright in every orientation.
+
 If Windows sends touches to another monitor, use Control Panel → Tablet PC Settings → Setup to associate touch input with the portrait display. Windows must already recognize the touchscreen driver.
 
 ## Operator controls
 
 - `Ctrl + Shift + Q`: show the close-game confirmation.
 - `Ctrl + Shift + M`: mute or unmute music and sound effects.
-- `Ctrl + Shift + R`: rotate the game clockwise by 90°. The chosen orientation is remembered. If operating-system rotation causes touch problems, keep Windows in Landscape and rotate the game to match the physically mounted touchscreen instead.
+- `Shift + R`: rotate the game clockwise by 90° when you are not typing in a registration field. The chosen orientation is remembered. If operating-system rotation causes touch problems, keep Windows in Landscape and rotate the game to match the physically mounted touchscreen instead.
 - `F11`: switch between the full-screen game and a testing window.
 - To test the app in a window from a command prompt: `"Catch the Phish.exe" --windowed`.
 

@@ -18,7 +18,7 @@ Press **Ctrl+Shift+Q** to close the game with a confirmation. **F11** switches b
 
 On an Apple Silicon Mac (M1 or newer), download and extract the Mac ZIP from the latest release, move **Catch the Phish.app** to Applications, then open it. The app has an ad-hoc signature verified during packaging, but is not signed with an Apple Developer ID or notarized. If macOS blocks it, use **System Settings → Privacy & Security → Open Anyway** for this download. If it still reports this app as damaged, see [Mac setup](docs/mac-setup.md). From the source project, run `npm ci`, `npm run build`, then `npm start`. The game opens full screen on Mac too. Use **Command+Shift+Q** to close it with a confirmation, or **Command+Shift+M** to toggle sound.
 
-Leave macOS display orientation set to **Landscape** when its portrait setting causes touchscreen problems. Press **Command+Shift+R** on Mac or **Ctrl+Shift+R** on Windows to rotate the entire game clockwise by 90°. Repeat to cycle through 90°, 180°, 270°, and upright. Choose 90° or 270° to suit the way the physical touchscreen is mounted. The game scales to fit the rotated dimensions, including its keyboard, and touch/click targets rotate with the controls. The chosen orientation is remembered on this computer after returning home or reopening the app.
+Leave macOS display orientation set to **Landscape** when its portrait setting causes touchscreen problems. Tap **Rotate screen** at the top right of the home screen to rotate the entire game clockwise by 90°. Repeat to cycle through 90°, 180°, 270°, and upright. **Shift+R** also rotates the game on Mac and Windows when you are not typing in a registration field. Choose 90° or 270° to suit the way the physical touchscreen is mounted. The game scales to fit the rotated dimensions, including its keyboard, and touch/click targets rotate with the controls. The chosen orientation is remembered on this computer after returning home or reopening the app.
 
 On a display that is physically landscape, upright mode keeps the portrait game centered with space at the sides. Rotating the game makes its image sideways so a physically portrait-mounted display can still use the operating system's landscape setting. This setting rotates only the game; macOS and other apps keep their existing orientation.
 
@@ -50,6 +50,7 @@ Preview: http://localhost:5185
 
 ```sh
 npm test
+npm run test:desktop
 npm run build
 npm start -- --windowed
 npm run package:win
@@ -69,3 +70,5 @@ Version1.1.1 removes the sound banner and adds clearer glass chimes to button, f
 Version 1.1.2 adds saved app rotation in 90° steps, an Apple Silicon Mac download, a 30-second inactivity timeout, and the simplified fourth instruction: “Be accurate and quick.”
 
 Version 1.1.3 repairs Mac app signing and checks the app and nested signatures before creating a download archive. Apple Developer ID signing and notarization are still required for distribution without manual macOS approval.
+
+Version 1.1.4 fixes repeated Mac fullscreen transitions caused by Dock/menu-bar work-area changes, adds a home-screen rotation button, and simplifies the rotation shortcut to Shift+R. Mac now uses native fullscreen; Windows retains kiosk mode.

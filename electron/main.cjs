@@ -1,6 +1,7 @@
 const { app, BrowserWindow, dialog, Menu, powerSaveBlocker, protocol, screen } = require('electron');
 const path = require('node:path');
 const { createAssetHandler } = require('./asset-protocol.cjs');
+const { hasDisplayGeometryChanged } = require('./display-policy.cjs');
 
 app.setName('Catch the Phish');
 app.setPath('userData', path.join(app.getPath('appData'), 'Catch the Phish'));
@@ -32,10 +33,13 @@ function fitDisplay() {
   if (!mainWindow || mainWindow.isDestroyed() || !presentationMode) return;
   const display = chooseDisplay();
   displayId = display.id;
-  mainWindow.setKiosk(false);
-  mainWindow.setFullScreen(false);
-  mainWindow.setBounds(display.bounds);
-  mainWindow.setKiosk(true);
+  const current = mainWindow.getBounds();
+  if (['x', 'y', 'width', 'height'].some(key => current[key] !== display.bounds[key])) {
+    mainWindow.setBounds(display.bounds);
+  }
+  if (process.platform === 'darwin') {
+    if (!mainWindow.isFullScreen()) mainWindow.setFullScreen(true);
+  } else if (!mainWindow.isKiosk()) mainWindow.setKiosk(true);
 }
 
 async function requestExit() {
@@ -73,11 +77,12 @@ function createWindow() {
     title: 'Catch the Phish',
     backgroundColor: '#03122b',
     show: false,
-    kiosk: !windowed,
+    kiosk: !windowed && process.platform !== 'darwin',
     fullscreen: !windowed,
-    frame: windowed,
+    frame: windowed || process.platform === 'darwin',
     autoHideMenuBar: true,
     webPreferences: {
+      preload: path.join(__dirname, 'preload.cjs'),
       nodeIntegration: false,
       contextIsolation: true,
       sandbox: true,
@@ -104,6 +109,11 @@ function createWindow() {
 
   mainWindow.webContents.on('before-input-event', (event, input) => {
     if (input.type !== 'keyDown') return;
+    if ((input.control || input.meta) && input.shift && (input.code === 'KeyR' || input.key.toLowerCase() === 'r')) {
+      event.preventDefault();
+      if (!input.isAutoRepeat) mainWindow.webContents.send('ctphish:rotate');
+      return;
+    }
     if ((input.control || input.meta) && input.shift && input.key.toLowerCase() === 'q') {
       event.preventDefault();
       void requestExit();
@@ -111,7 +121,7 @@ function createWindow() {
     }
     if (input.key === 'F11') {
       event.preventDefault();
-      if (mainWindow.isKiosk()) {
+      if (presentationMode) {
         presentationMode = false;
         mainWindow.setKiosk(false);
         mainWindow.setFullScreen(false);
@@ -155,8 +165,10 @@ if (hasLock) {
     screen.on('display-removed', (_event, display) => {
       if (display.id === displayId) fitDisplay();
     });
-    screen.on('display-metrics-changed', (_event, display) => {
-      if (display.id === displayId) fitDisplay();
+    screen.on('display-metrics-changed', (_event, display, changedMetrics) => {
+      // macOS hides/shows the Dock and menu bar during fullscreen transitions.
+      // Reacting to workArea changes here used to exit and re-enter fullscreen.
+      if (display.id === displayId && hasDisplayGeometryChanged(changedMetrics)) fitDisplay();
     });
   });
   app.on('second-instance', () => {

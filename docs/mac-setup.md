@@ -29,4 +29,6 @@ This does not change Gatekeeper settings or other apps. If signature verificatio
 
 ## Rotation
 
-Keep macOS in Landscape and press **Command+Shift+R** to rotate the game to match the physically mounted touchscreen. The game remembers your choice. **Command+Shift+M** toggles audio.
+Keep macOS in Landscape. On the home screen, tap **Rotate screen** at the top right until the game matches the physically mounted touchscreen. This button stays upright and visible in every orientation. **Shift+R** also rotates the game when you are not typing in a registration field. The game remembers your choice. **Command+Shift+M** toggles audio.
+
+Version 1.1.4 also fixes repeated fullscreen flashing caused by Dock/menu-bar changes in earlier Mac versions. Close the older app completely before opening the replacement.
